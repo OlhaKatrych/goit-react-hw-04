@@ -2,7 +2,7 @@ import css from "./SearchBar.module.css";
 
 import { Formik, Form, Field } from "formik";
 import { GoSearch } from "react-icons/go";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 
 function SearchBar({ onSearch }) {
   return (
@@ -10,9 +10,8 @@ function SearchBar({ onSearch }) {
       <Formik
         initialValues={{ search: "" }}
         onSubmit={(values, actions) => {
-          if(values.search === ""){
-
-            toast.error('Please enter a search term!');
+          if (values.search === "") {
+            toast.error("Please enter a search term!", { duration: 2000 });
           }
           onSearch(values.search);
           actions.resetForm();
