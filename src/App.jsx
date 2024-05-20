@@ -11,14 +11,14 @@ import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import ImageModal from "./components/ImageModal/ImageModal";
 
 function App() {
-  const [isPhotos, setIsPhotos] = useState([]);
+  const [photos, setPhotos] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoader, setIsLoader] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [showBtn, setShowBtn] = useState(false);
-  const [isPage, setIsPage] = useState(1);
+  const [page, setPage] = useState(1);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
+  const [totalPages, setTotalPages] = useState(false);
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -28,8 +28,12 @@ function App() {
       try {
         setIsError(false);
         setIsLoader(true);
-        const photos = await getRespAPI(searchQuery, isPage);
-        setIsPhotos((prevState) => [...prevState, ...photos]);
+        const resp = await getRespAPI(searchQuery, page);
+        setTotalPages(page < Math.ceil(resp.total_pages / 20));
+        console.log(totalPages);
+        const res = await resp;
+        const photos = res.results;
+        setPhotos((prevState) => [...prevState, ...photos]);
       } catch {
         setIsError(true);
       } finally {
@@ -37,19 +41,16 @@ function App() {
       }
     }
     getPhotos();
-  }, [searchQuery, isPage]);
+  }, [searchQuery, page]);
 
   async function hadleSearch(topic) {
     setSearchQuery(topic);
-    setIsPage(1);
-    setIsPhotos([]);
+    setPage(1);
+    setPhotos([]);
   }
 
-  const total_pages = isPage >= 1000;
-
   async function handleMoreBtn() {
-    setIsPage((prevState) => prevState + 1);
-    setShowBtn(total_pages && total_pages !== isPage);
+    setPage((prevState) => prevState + 1);
   }
 
   function openModal() {
@@ -59,19 +60,20 @@ function App() {
     setIsOpen(false);
   }
 
-  function handleSelectPhoto (photo)  {
+  function handleSelectPhoto(photo) {
     setSelectedImg(photo);
     openModal();
-  };
+  }
 
   return (
     <div>
       <SearchBar onSearch={hadleSearch} />
       {isError && <ErrorMessage />}
-      {isPhotos.length > 0 && <ImageGallery data={isPhotos} handleSelectPhoto={handleSelectPhoto} />}
+      {photos.length > 0 && (
+        <ImageGallery data={photos} handleSelectPhoto={handleSelectPhoto} />
+      )}
       {isLoader && <Loader />}
-      {isPhotos.length > 0 && <LoadMoreBtn clickMore={handleMoreBtn} />}
-      {showBtn && <LoadMoreBtn />}
+      {totalPages && <LoadMoreBtn clickMore={handleMoreBtn} />}
       {selectedImg !== null && (
         <ImageModal
           selectedImg={selectedImg}
