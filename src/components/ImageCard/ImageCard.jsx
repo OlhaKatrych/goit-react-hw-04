@@ -7,7 +7,9 @@ function ImageCard({ item, handleSelectPhoto }) {
         className={css.pic}
         src={item.urls.small}
         alt={item.alt_description}
-        onClick={() => {handleSelectPhoto(item)}}
+        onClick={() => {
+          handleSelectPhoto(item);
+        }}
       />
     </div>
   );

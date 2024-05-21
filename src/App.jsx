@@ -30,7 +30,6 @@ function App() {
         setIsLoader(true);
         const resp = await getRespAPI(searchQuery, page);
         setTotalPages(page < Math.ceil(resp.total_pages / 20));
-        console.log(totalPages);
         const res = await resp;
         const photos = res.results;
         setPhotos((prevState) => [...prevState, ...photos]);

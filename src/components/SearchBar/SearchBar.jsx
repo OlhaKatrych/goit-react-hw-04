@@ -18,7 +18,7 @@ function SearchBar({ onSearch }) {
         }}
       >
         <Form className={css.form}>
-          <Field type="text" name="search" className={css.input} />
+          <Field type="text" name="search" className={css.input} placeholder='Please enter your request!'/>
           <button type="submit" className={css.btn}>
             <GoSearch />
           </button>

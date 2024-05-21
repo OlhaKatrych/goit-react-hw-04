@@ -13,7 +13,6 @@ async function getRespAPI(topic, currentPage) {
     },
   });
   const data = resp.data;
-  console.log(data);
   return data;
 }
 
